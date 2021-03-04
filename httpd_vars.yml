@@ -1,0 +1,5 @@
+document_root: /var/www/html
+
+webpage_path: C:\ARTH Docs\Ansible-Task-11\index.html
+
+conf_file_path: C:\ARTH Docs\Ansible-Task-11\conf_by_ansible.conf

@@ -1,0 +1,41 @@
+- hosts: all
+  vars_files:
+  - httpd_vars.yml
+
+  tasks:
+  - name: Installing HTTPD
+    package:
+      name: httpd
+      state: present
+  
+  - name: Creating Document root directory
+    file:
+      state: directory
+      path: "{{document_root}}"
+
+  - name: Copying webpages in HTML directory
+    copy:
+      dest: "{{document_root}}index.html"
+      src: "{{webpage_path}}"
+
+  - block:
+    - name: Check if the configuration file exists
+      command: ls -f /etc/httpd/conf.d/conf_by_ansible.conf
+
+    rescue:
+    - name: copying configuration file
+      template:
+        src: "{{conf_file_path}}"
+        dest: /etc/httpd/conf.d/conf_by_ansible.conf
+
+    - name: Restarting HTTPD
+      service:
+        name: httpd
+        state: restarted
+
+    always:
+    - name: Confirming HTTPD is Started, if not then starting it
+      service: started
+
+    - debug:
+      msg: "HTTPD Configured successfully"
